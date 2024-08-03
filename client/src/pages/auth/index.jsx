@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input"
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 
 
@@ -15,12 +16,23 @@ export const Auth = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
+  const validateRegister = () => {
+    if(!email.length){
+      toast.error("Email is required");
+      return false;
+    }
+    return true;
+  }
+
   const handleLogin = async () => {
     
   }
 
   const handleRegister = async () => {
 
+    if(validateRegister()) {
+      alert("Done");
+    }
   }
 
 
@@ -57,7 +69,7 @@ export const Auth = () => {
                   value={password}
                   onchange={(e) => setPassword(e.target.value)}
                   />
-                <Button onClick={handleLogin} className='w-full'>Login</Button>
+                <Button className='w-full bg-purple-700' onClick={handleLogin}>Login</Button>
               </div>
             </TabsContent>
 
