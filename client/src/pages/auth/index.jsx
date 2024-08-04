@@ -6,11 +6,18 @@ import { Input } from "@/components/ui/input"
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { apiClient } from '@/lib/api-client'
+import { REGISTER_ROUTE } from '@/utils/constants';
+import { LOGIN_ROUTE } from '@/utils/constants';
+import { useNavigate } from 'react-router-dom';
 
 
+ 
 
 
 export const Auth = () => {
+
+  const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -21,18 +28,60 @@ export const Auth = () => {
       toast.error("Email is required");
       return false;
     }
+
+    if(!password.length){
+      toast.error("Password is required");
+      return false;
+    }
+    if(password !== confirmPassword){
+      toast.error("Passwords do not match");
+      return false;
+    }
+    return true;
+  }
+
+  const validateLogin = () => {
+    if(!email.length){
+      toast.error("Email is required");
+      return false;
+    }
+
+    if(!password.length){
+      toast.error("Password is required");
+      return false;
+    }
     return true;
   }
 
   const handleLogin = async () => {
+
+    if(validateLogin()) {
+
+      const response = await apiClient.post(LOGIN_ROUTE, {email, password}, {withCredentials: true});
+      if(response.data.user.id){
+        if(response.data.user.profileSetup){
+          navigate('/chat');
+        } else {
+          navigate('/profile');
+        }
+      }
+      console.log({response});
+    }
     
   }
 
   const handleRegister = async () => {
 
     if(validateRegister()) {
-      alert("Done");
+      
+       const response = await apiClient.post(REGISTER_ROUTE, {email, password}, {withCredentials: true});
+       
+      if(response.status === 201) {
+        navigate('/profile');
+      };  
+       console.log({response});     
     }
+
   }
 
 
@@ -61,13 +110,13 @@ export const Auth = () => {
                   type="email"
                   placeholder="Enter your email here"
                   value={email}
-                  onchange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => setEmail(e.target.value)}
                   />
                 <Input
                   type="password"
                   placeholder="Enter your password here"
                   value={password}
-                  onchange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => setPassword(e.target.value)}
                   />
                 <Button className='w-full bg-purple-700' onClick={handleLogin}>Login</Button>
               </div>
@@ -79,19 +128,19 @@ export const Auth = () => {
                   type="email"
                   placeholder="Enter your email here"
                   value={email}
-                  onchange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => setEmail(e.target.value)}
                   />
                 <Input
                   type="password"
                   placeholder="Enter your password here"
                   value={password}
-                  onchange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => setPassword(e.target.value)}
                   />
                 <Input
                   type="password"
                   placeholder="Confirm your password here"
                   value={confirmPassword}
-                  onchange={(e) => setConfirmPassword(e.target.value)}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                 />
                 <Button className='w-full bg-purple-700' onClick={handleRegister}>Register</Button>  
               </div>
