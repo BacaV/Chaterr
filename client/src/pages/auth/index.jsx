@@ -10,6 +10,7 @@ import { apiClient } from '@/lib/api-client'
 import { REGISTER_ROUTE } from '@/utils/constants';
 import { LOGIN_ROUTE } from '@/utils/constants';
 import { useNavigate } from 'react-router-dom';
+import { useAppStore } from '@/store';
 
 
  
@@ -18,6 +19,7 @@ import { useNavigate } from 'react-router-dom';
 export const Auth = () => {
 
   const navigate = useNavigate();
+  const {setUserInfo} = useAppStore();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -59,6 +61,7 @@ export const Auth = () => {
 
       const response = await apiClient.post(LOGIN_ROUTE, {email, password}, {withCredentials: true});
       if(response.data.user.id){
+        setUserInfo(response.data.user);
         if(response.data.user.profileSetup){
           navigate('/chat');
         } else {
