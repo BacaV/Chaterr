@@ -1,3 +1,4 @@
+import { useAppStore } from "@/store";
 
 export const Profile = () => {
   const {userInfo} = useAppStore();
