@@ -51,6 +51,7 @@ export const Auth = () => {
       toast.error("Password is required");
       return false;
     }
+
     return true;
   }
 
@@ -94,7 +95,7 @@ export const Auth = () => {
       <div >
       <div className='text-center'>
           <div className='title-wrapper flex flex-row justify-center items-center h-[1/2vh]'>
-              <h1 className='font-bold  text-6xl '>Welcome to Chaterr</h1>
+              <h1 className='font-bold  text-5xl '>Welcome to Chaterr</h1>
               <img src= { Victory } alt="Victory Image" className='h-[100px]' />
           </div>
           <p className='text-xl text-bold'>Login or register to get started!</p>
