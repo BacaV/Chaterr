@@ -46,11 +46,11 @@ export const Profile = () => {
             <Input className="w-full" placeholder="First Name" value={firstName} onChange={(e) => setFirstName(e.target.value)}/>
             <Input className="w-full" placeholder="Last Name" value={lastName} onChange={(e) => setLastName(e.target.value)}/>
             <div className="flex gap-3">
-              <button className="red w-[35px] h-[35px] bg-red-500 rounded-full"></button>
-              <button className="green w-[35px] h-[35px] bg-green-500 rounded-full"></button>
-              <button className="blue w-[35px] h-[35px] bg-blue-500 rounded-full"></button>
-              <button className="yellow w-[35px] h-[35px] bg-yellow-500 rounded-full"></button>
-              <button className="purple w-[35px] h-[35px] bg-purple-500 rounded-full"></button>
+              <button onClick={() => setColor('red')} className="red w-[35px] h-[35px] bg-red-500 rounded-full"></button>
+              <button onClick={() => setColor('green')} className="green w-[35px] h-[35px] bg-green-500 rounded-full"></button>
+              <button onClick={() => setColor('blue')} className="blue w-[35px] h-[35px] bg-blue-500 rounded-full"></button>
+              <button onClick={() => setColor('yellow')} className="yellow w-[35px] h-[35px] bg-yellow-500 rounded-full"></button>
+              <button onClick={() => setColor('purple')} className="purple w-[35px] h-[35px] bg-purple-500 rounded-full"></button>
             </div>
             <Button className='w-full bg-purple-700' onClick={saveChanges}>Save Changes</Button>
           </div>
