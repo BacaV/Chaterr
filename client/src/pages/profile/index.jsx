@@ -35,7 +35,7 @@ export const Profile = () => {
               <AvatarFallback>Us</AvatarFallback>
             </Avatar>
 
-            <Button variant="outline" onClick={() => setHovered('')}>
+            <Button variant="outline">
               Change Avatar 
             </Button>
           </div>
@@ -45,6 +45,7 @@ export const Profile = () => {
             <Input className="w-full" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)}/>
             <Input className="w-full" placeholder="First Name" value={firstName} onChange={(e) => setFirstName(e.target.value)}/>
             <Input className="w-full" placeholder="Last Name" value={lastName} onChange={(e) => setLastName(e.target.value)}/>
+            <div>Current color</div>
             <div className="flex gap-3">
               <button onClick={() => setColor('red')} className="red w-[35px] h-[35px] bg-red-500 rounded-full"></button>
               <button onClick={() => setColor('green')} className="green w-[35px] h-[35px] bg-green-500 rounded-full"></button>
