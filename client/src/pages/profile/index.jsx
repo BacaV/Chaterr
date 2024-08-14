@@ -13,7 +13,7 @@ export const Profile = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [image, setImage] = useState('');
-  const [color, setColor] = useState('');
+  const [color, setColor] = useState('gray');
   const [hovered, setHovered] = useState('');
   const [email, setEmail] = useState('');
 
@@ -45,13 +45,13 @@ export const Profile = () => {
             <Input className="w-full" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)}/>
             <Input className="w-full" placeholder="First Name" value={firstName} onChange={(e) => setFirstName(e.target.value)}/>
             <Input className="w-full" placeholder="Last Name" value={lastName} onChange={(e) => setLastName(e.target.value)}/>
-            <div>Current color</div>
             <div className="flex gap-3">
-              <button onClick={() => setColor('red')} className="red w-[35px] h-[35px] bg-red-500 rounded-full"></button>
-              <button onClick={() => setColor('green')} className="green w-[35px] h-[35px] bg-green-500 rounded-full"></button>
-              <button onClick={() => setColor('blue')} className="blue w-[35px] h-[35px] bg-blue-500 rounded-full"></button>
-              <button onClick={() => setColor('yellow')} className="yellow w-[35px] h-[35px] bg-yellow-500 rounded-full"></button>
-              <button onClick={() => setColor('purple')} className="purple w-[35px] h-[35px] bg-purple-500 rounded-full"></button>
+              <div className={`p-1 m-0 flex justify-center items-center ${color === 'gray' ? 'border-2 rounded-full border-black' : ''} `}> <button onClick={() => setColor('gray')} className={`gray m-0  w-[32px] h-[32px] bg-gray-500 rounded-full`}></button> </div>
+              <div className={`p-1 m-0 flex justify-center items-center ${color === 'red' ? 'border-2 rounded-full border-black' : ''} `}> <button onClick={() => setColor('red')} className={`red m-0  w-[32px] h-[32px] bg-red-500 rounded-full`}></button> </div>
+              <div className={`p-1 m-0 flex justify-center items-center ${color === 'blue' ? 'border-2 rounded-full border-black' : ''} `}> <button onClick={() => setColor('blue')} className={`blue m-0  w-[32px] h-[32px] bg-blue-500 rounded-full`}></button> </div>
+              <div className={`p-1 m-0 flex justify-center items-center ${color === 'yellow' ? 'border-2 rounded-full border-black' : ''} `}> <button onClick={() => setColor('yellow')} className={`yellow m-0  w-[32px] h-[32px] bg-yellow-500 rounded-full`}></button> </div>
+              <div className={`p-1 m-0 flex justify-center items-center ${color === 'purple' ? 'border-2 rounded-full border-black' : ''} `}> <button onClick={() => setColor('purple')} className={`purple m-0  w-[32px] h-[32px] bg-purple-500 rounded-full`}></button> </div>
+              
             </div>
             <Button className='w-full bg-purple-700' onClick={saveChanges}>Save Changes</Button>
           </div>
