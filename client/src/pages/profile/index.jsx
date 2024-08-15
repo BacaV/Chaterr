@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
+import { IoArrowBack } from "react-icons/io5";
 
 
 export const Profile = () => {
@@ -26,13 +26,19 @@ export const Profile = () => {
     <>
       
       <div className="h-[100vh] w-[100vw] bg-[#fefefe] flex items-center justify-center">
-        <div className='bg-gradient-to-br drop-shadow-2xl from-[#a7c957] to-[#dffa9f]/60 w-[80vw] md:w-[90vw] lg:w-[70vw] h-[80vh] rounded-xl flex flex-col justify-center items-center gap-10'>
+        <div className=' relative bg-gradient-to-br drop-shadow-2xl from-[#a7c957] to-[#dffa9f]/60 w-[80vw] md:w-[90vw] lg:w-[70vw] h-[80vh] rounded-xl flex flex-col justify-center items-center gap-10'>
+        <IoArrowBack onClick={() => navigate('/')} className="text-4xl absolute top-5 left-5 cursor-pointer" />
         <h2 className="text-3xl font-bold text-white">Profile Settings</h2>
         <div className="flex justify-center items-center gap-10 ">
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 justify-center items-center">
             <Avatar className="size-40">
-              <AvatarImage src={image} />
-              <AvatarFallback>Us</AvatarFallback>
+              {image ? <AvatarImage src={image} /> : 
+                <div className={`w-[160px] h-[160px] uppercase bg-${color}-500 rounded-full text-white flex justify-center items-center text-2xl`}>
+                  {firstName ? firstName.split('').shift() :
+                  userInfo.email.split('').shift()}
+                </div>
+              }
+              
             </Avatar>
 
             <Button variant="outline">
@@ -42,7 +48,7 @@ export const Profile = () => {
          
 
           <div className="settings flex flex-col gap-3">
-            <Input className="w-full" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)}/>
+            <Input className="w-full" type="email" disabled value={userInfo.email}/>
             <Input className="w-full" placeholder="First Name" value={firstName} onChange={(e) => setFirstName(e.target.value)}/>
             <Input className="w-full" placeholder="Last Name" value={lastName} onChange={(e) => setLastName(e.target.value)}/>
             <div className="flex gap-3">
