@@ -5,6 +5,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { IoArrowBack } from "react-icons/io5";
+import { toast } from "sonner";
+import { apiClient } from "@/lib/api-client";
+import { UPDATE_PROFILE } from "@/utils/constants";
 
 
 export const Profile = () => {
@@ -13,11 +16,53 @@ export const Profile = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [image, setImage] = useState('');
-  const [color, setColor] = useState('gray');
+  const [selectedColor, setSelectedColor] = useState(1);
   const [hovered, setHovered] = useState('');
-  const [email, setEmail] = useState('');
+
+  const handleColor = (selectedColor) => {
+     switch(selectedColor) {
+       case 1:
+         return 'gray';
+       case 2:
+         return 'red';
+       case 3:
+         return 'blue';
+       case 4:
+         return 'yellow';
+       case 5:
+         return 'green';
+     }
+  }
+
+
+  const validateProfile = () => {
+    if(!firstName.length){
+      toast.error("First name is required");
+      return false;
+    }
+
+    if(!lastName.length){
+      toast.error("Last name is required");
+      return false;
+    }
+
+    return true;
+  }
 
   const saveChanges = async () => {
+    if(validateProfile()) {
+      try{
+
+        const response = await apiClient.post(UPDATE_PROFILE, {firstName, lastName, color: selectedColor}, {withCredentials: true});
+        setUserInfo({...response.data});
+        toast.success("Profile updated successfully");
+        navigate('/chat');
+      } catch(error) {
+          console.log({error});
+      }
+      
+      
+    }
 
   }
 
@@ -33,7 +78,7 @@ export const Profile = () => {
           <div className="flex flex-col gap-3 justify-center items-center">
             <Avatar className="size-40">
               {image ? <AvatarImage src={image} /> : 
-                <div className={`w-[160px] h-[160px] uppercase bg-${color}-500 rounded-full text-white flex justify-center items-center text-2xl`}>
+                <div className={`w-[160px] h-[160px] uppercase bg-${handleColor(selectedColor)}-500 rounded-full text-white flex justify-center items-center text-2xl`}>
                   {firstName ? firstName.split('').shift() :
                   userInfo.email.split('').shift()}
                 </div>
@@ -52,11 +97,11 @@ export const Profile = () => {
             <Input className="w-full" placeholder="First Name" value={firstName} onChange={(e) => setFirstName(e.target.value)}/>
             <Input className="w-full" placeholder="Last Name" value={lastName} onChange={(e) => setLastName(e.target.value)}/>
             <div className="flex gap-3">
-              <div className={`p-1 m-0 flex justify-center items-center ${color === 'gray' ? 'border-2 rounded-full border-black' : ''} `}> <button onClick={() => setColor('gray')} className={`gray m-0  w-[32px] h-[32px] bg-gray-500 rounded-full`}></button> </div>
-              <div className={`p-1 m-0 flex justify-center items-center ${color === 'red' ? 'border-2 rounded-full border-black' : ''} `}> <button onClick={() => setColor('red')} className={`red m-0  w-[32px] h-[32px] bg-red-500 rounded-full`}></button> </div>
-              <div className={`p-1 m-0 flex justify-center items-center ${color === 'blue' ? 'border-2 rounded-full border-black' : ''} `}> <button onClick={() => setColor('blue')} className={`blue m-0  w-[32px] h-[32px] bg-blue-500 rounded-full`}></button> </div>
-              <div className={`p-1 m-0 flex justify-center items-center ${color === 'yellow' ? 'border-2 rounded-full border-black' : ''} `}> <button onClick={() => setColor('yellow')} className={`yellow m-0  w-[32px] h-[32px] bg-yellow-500 rounded-full`}></button> </div>
-              <div className={`p-1 m-0 flex justify-center items-center ${color === 'purple' ? 'border-2 rounded-full border-black' : ''} `}> <button onClick={() => setColor('purple')} className={`purple m-0  w-[32px] h-[32px] bg-purple-500 rounded-full`}></button> </div>
+              <div className={`p-1 m-0 flex justify-center items-center ${selectedColor === 1 ? 'border-2 rounded-full border-black' : ''} `}> <button onClick={() => setSelectedColor(1)} className={`gray m-0  w-[32px] h-[32px] bg-gray-500 rounded-full`}></button> </div>
+              <div className={`p-1 m-0 flex justify-center items-center ${selectedColor === 2 ? 'border-2 rounded-full border-black' : ''} `}> <button onClick={() => setSelectedColor(2)} className={`red m-0  w-[32px] h-[32px] bg-red-500 rounded-full`}></button> </div>
+              <div className={`p-1 m-0 flex justify-center items-center ${selectedColor === 3 ? 'border-2 rounded-full border-black' : ''} `}> <button onClick={() => setSelectedColor(3)} className={`blue m-0  w-[32px] h-[32px] bg-blue-500 rounded-full`}></button> </div>
+              <div className={`p-1 m-0 flex justify-center items-center ${selectedColor === 4 ? 'border-2 rounded-full border-black' : ''} `}> <button onClick={() => setSelectedColor(4)} className={`yellow m-0  w-[32px] h-[32px] bg-yellow-500 rounded-full`}></button> </div>
+              <div className={`p-1 m-0 flex justify-center items-center ${selectedColor === 5 ? 'border-2 rounded-full border-black' : ''} `}> <button onClick={() => setSelectedColor(5)} className={`purple m-0  w-[32px] h-[32px] bg-purple-500 rounded-full`}></button> </div>
               
             </div>
             <Button className='w-full bg-purple-700' onClick={saveChanges}>Save Changes</Button>
