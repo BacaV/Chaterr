@@ -1,6 +1,6 @@
 import { useAppStore } from "@/store";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,17 @@ export const Profile = () => {
   const [image, setImage] = useState('');
   const [selectedColor, setSelectedColor] = useState(1);
   const [hovered, setHovered] = useState('');
+
+  
+useEffect(() => {
+  if(userInfo.profileSetup) {
+    setFirstName(userInfo.firstName);
+    setLastName(userInfo.lastName);
+    setImage(userInfo.image);
+    setSelectedColor(userInfo.color);
+  }
+}, [userInfo]);
+
 
   const handleColor = (selectedColor) => {
      switch(selectedColor) {
