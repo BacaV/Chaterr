@@ -102,6 +102,26 @@ export const getUserInfo = async (req, res, next) => {
   }
 };
 
+export const updateImage = async (req, res, next) => {
+  const { userId } = req;
+  const { image } = req.body;
+  try {
+    const userData = await User.findByIdAndUpdate(userId, { image }, { new: true });
+    return res.status(200).json({
+      id: userData.id,
+      email: userData.email,
+      profileSetup: userData.profileSetup,
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      image: userData.Image,
+      color: userData.color,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send(error);
+  }
+};
+
 export const updateProfile = async (req, res, next) => {
 
     const { firstName, lastName, color } = req.body;

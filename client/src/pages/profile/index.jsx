@@ -1,6 +1,6 @@
 import { useAppStore } from "@/store";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,7 +8,7 @@ import { IoArrowBack } from "react-icons/io5";
 import { toast } from "sonner";
 import { apiClient } from "@/lib/api-client";
 import { UPDATE_PROFILE } from "@/utils/constants";
-
+import { UPDATE_PROFILE_IMAGE } from "@/utils/constants";
 
 export const Profile = () => {
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ export const Profile = () => {
   const [lastName, setLastName] = useState('');
   const [image, setImage] = useState('');
   const [selectedColor, setSelectedColor] = useState(1);
-  const [hovered, setHovered] = useState('');
+  const fileInputRef = useRef(null);
 
   
 useEffect(() => {
@@ -77,6 +77,36 @@ useEffect(() => {
 
   }
 
+  const handleFileInputClick = () => {
+    fileInputRef.current.click();
+  }
+
+  const handleImageChange = async (event) => {
+    const file = event.target.files[0];
+
+    if(file) {
+      const formData = new FormData();
+      formData.append('profile-image', file);
+      const response = await apiClient.post(UPDATE_PROFILE_IMAGE, formData, {withCredentials: true});
+      
+    if(response.status === 200 && response.data.image) {
+      setUserInfo({...userInfo, image: response.data.image});
+      toast.success("Profile image updated successfully");
+    }
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImage(reader.result);
+    }
+    reader.readAsDataURL(file);
+  
+}
+
+  const handleDeleteImage = () => {
+    setImage('');
+  }
+
 
   return (
     <>
@@ -97,9 +127,10 @@ useEffect(() => {
               
             </Avatar>
 
-            <Button variant="outline">
+            <Button variant="outline" onClick={handleFileInputClick}>
               Change Avatar 
             </Button>
+            <input type="file" ref={fileInputRef} onChange={handleImageChange} name="profile-image" className="hidden" accept=".jpg, .jpeg, .png, .svg, .webp" />
           </div>
          
 
