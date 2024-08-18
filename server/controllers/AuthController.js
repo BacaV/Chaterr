@@ -2,6 +2,7 @@ import { response } from "express";
 import User from "../models/UserModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import { renameSync } from "fs";
 
 const maxAge = 3 * 24 * 60 * 60 * 1000;
 
@@ -103,18 +104,23 @@ export const getUserInfo = async (req, res, next) => {
 };
 
 export const updateImage = async (req, res, next) => {
-  const { userId } = req;
-  const { image } = req.body;
   try {
-    const userData = await User.findByIdAndUpdate(userId, { image }, { new: true });
+    const userData = await User.findById(req.userId);
+    if (!req.file) {
+      return res.status(400).send("Image is required");
+    }
+
+    const date = Date.now();
+    let fileName = "uploads/profiles/" + date + req.file.originalname;
+    renameSync(req.file.path, fileName);
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.userId,
+      { Image: fileName },
+      { new: true, runValidators: true }
+    )
     return res.status(200).json({
-      id: userData.id,
-      email: userData.email,
-      profileSetup: userData.profileSetup,
-      firstName: userData.firstName,
-      lastName: userData.lastName,
-      image: userData.Image,
-      color: userData.color,
+      image: updatedUser.image
     });
   } catch (error) {
     console.log(error);
@@ -153,3 +159,28 @@ export const updateProfile = async (req, res, next) => {
     return res.status(500).send(error);
   }
 };
+
+export const deleteImage = async (req, res, next) => {
+  
+  try {
+    const { userId } = req;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if(user.image) {
+      unlinkSync(user.Image);
+    }
+
+    user.Image = null;
+
+    await user.save();
+
+    return res.status(200).json({ message: "Image deleted successfully" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send(error);
+  }
+}

@@ -7,8 +7,9 @@ import { Input } from "@/components/ui/input";
 import { IoArrowBack } from "react-icons/io5";
 import { toast } from "sonner";
 import { apiClient } from "@/lib/api-client";
-import { UPDATE_PROFILE } from "@/utils/constants";
+import { HOST, UPDATE_PROFILE } from "@/utils/constants";
 import { UPDATE_PROFILE_IMAGE } from "@/utils/constants";
+import { DELETE_PROFILE_IMAGE } from "@/utils/constants";
 
 export const Profile = () => {
   const navigate = useNavigate();
@@ -24,8 +25,10 @@ useEffect(() => {
   if(userInfo.profileSetup) {
     setFirstName(userInfo.firstName);
     setLastName(userInfo.lastName);
-    setImage(userInfo.image);
     setSelectedColor(userInfo.color);
+  }
+  if(userInfo.image) {
+    setImage(`${HOST}/${userInfo.image}`);
   }
 }, [userInfo]);
 
@@ -103,8 +106,17 @@ useEffect(() => {
   
 }
 
-  const handleDeleteImage = () => {
-    setImage('');
+  const handleDeleteImage = async () => {
+    try{
+      const response = await apiClient.delete(DELETE_PROFILE_IMAGE, {withCredentials: true});
+      if(response.status === 200) {
+        setUserInfo({...userInfo, image: null});
+        toast.success("Profile image deleted successfully");
+        setImage(null);
+      }
+    } catch(error) {
+      console.log({error});
+    }
   }
 
 
@@ -117,6 +129,7 @@ useEffect(() => {
         <h2 className="text-3xl font-bold text-white">Profile Settings</h2>
         <div className="flex justify-center items-center gap-10 ">
           <div className="flex flex-col gap-3 justify-center items-center">
+            
             <Avatar className="size-40">
               {image ? <AvatarImage src={image} /> : 
                 <div className={`w-[160px] h-[160px] uppercase bg-${handleColor(selectedColor)}-500 rounded-full text-white flex justify-center items-center text-2xl`}>
@@ -126,10 +139,14 @@ useEffect(() => {
               }
               
             </Avatar>
+            
 
             <Button variant="outline" onClick={handleFileInputClick}>
               Change Avatar 
             </Button>
+            
+            <Button variant="outline"onClick={handleDeleteImage}>Delete Image </Button>
+            
             <input type="file" ref={fileInputRef} onChange={handleImageChange} name="profile-image" className="hidden" accept=".jpg, .jpeg, .png, .svg, .webp" />
           </div>
          
