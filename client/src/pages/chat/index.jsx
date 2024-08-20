@@ -2,6 +2,9 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useAppStore } from "@/store";
 import { useEffect } from "react";
+import ChatContainer from "./components/chat-container";
+import EmptyChatContainer from "./components/empty-chat-container";
+import ContactsContainer from "./components/contacts-container";
 
 export const Chat = () => {
 
@@ -18,7 +21,12 @@ export const Chat = () => {
   }, [userInfo, navigate]);
 
   return (
-    <div>Chat</div>
+    <>
+    <EmptyChatContainer />
+    <ContactsContainer />
+    <ChatContainer />
+
+    </>
   )
 }
 
