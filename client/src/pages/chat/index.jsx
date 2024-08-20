@@ -22,10 +22,12 @@ export const Chat = () => {
 
   return (
     <>
-    <EmptyChatContainer />
-    <ContactsContainer />
-    <ChatContainer />
+    <div className="flex">
+      <ContactsContainer />
+      <EmptyChatContainer />
+      <ChatContainer />
 
+    </div>
     </>
   )
 }
