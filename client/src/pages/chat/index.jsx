@@ -24,7 +24,7 @@ export const Chat = () => {
     <>
     <div className="flex">
       <ContactsContainer />
-      <EmptyChatContainer />
+      {/* <EmptyChatContainer /> */}
       <ChatContainer />
 
     </div>
