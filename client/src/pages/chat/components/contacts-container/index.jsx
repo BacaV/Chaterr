@@ -1,5 +1,6 @@
 import React from 'react'
 import Logo from '@/assets/Logo.png'
+import ProfileInfo from './components/profile-info'
 
 const ContactsContainer = () => {
   return (
@@ -18,7 +19,7 @@ const ContactsContainer = () => {
             <h6 className='text-white text-opacity-80 ml-5'>Channels</h6>
         </div>
 
-        
+        <ProfileInfo />
     </div>
 
     </>

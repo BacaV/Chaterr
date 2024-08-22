@@ -184,3 +184,16 @@ export const deleteImage = async (req, res, next) => {
     return res.status(500).send(error);
   }
 }
+
+export const logout = async (req, res, next) => {
+  
+  try {
+    
+    res.cookie("jwt", "", { maxAge: 1, secure: true, sameSite: "None" });
+
+    return res.status(200).json({ message: "Logout successful" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send(error);
+  }
+}
