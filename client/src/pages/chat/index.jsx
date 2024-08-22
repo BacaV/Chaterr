@@ -8,7 +8,7 @@ import ContactsContainer from "./components/contacts-container";
 
 export const Chat = () => {
 
-  const {userInfo} = useAppStore();
+  const {userInfo, selectedChatType} = useAppStore();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,8 +24,7 @@ export const Chat = () => {
     <>
     <div className="flex">
       <ContactsContainer />
-      {/* <EmptyChatContainer /> */}
-      <ChatContainer />
+      {selectedChatType === undefined ? <EmptyChatContainer /> : <ChatContainer />}
 
     </div>
     </>

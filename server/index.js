@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import AuthRoutes from "./routes/AuthRoutes.js";
+import ContactsRoutes from "./routes/ContactRoutes.js";
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.use("/api/auth", AuthRoutes);
+app.use("/api/contacts", ContactsRoutes);
 
 mongoose.connect(databaseURL).then(() => {console.log("Connected to database")}).catch((err) => console.log(err));
 
