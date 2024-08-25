@@ -1,9 +1,24 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Logo from '@/assets/Logo.png'
 import ProfileInfo from './components/profile-info'
 import NewDm from './components/new-dm'
+import { apiClient } from '@/lib/api-client'
+import { GET_CONTACTS_FOR_DM } from '@/utils/constants'
 
 const ContactsContainer = () => {
+
+  useEffect(() => {
+    const getContacts = async () => {
+      const response = await apiClient.get(GET_CONTACTS_FOR_DM, {withCredentials: true})
+
+      if(response.data.contacts) {
+        console.log(response.data.contacts)
+      }
+    }
+
+    getContacts()
+  }, [])
+
   return (
     
     <>
