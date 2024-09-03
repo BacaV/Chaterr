@@ -6,6 +6,8 @@ import { IoSend } from "react-icons/io5";
 import EmojiPicker from "emoji-picker-react";
 import { useAppStore } from "@/store";
 import { useSocket } from "@/context/SocketContext";
+import { apiClient } from "@/lib/api-client";
+import { UPLOAD_FILE } from "@/utils/constants";
 
 const MessageBar = () => {
   const emojiRef = useRef();
@@ -52,15 +54,31 @@ const MessageBar = () => {
   };
 
   const handleAttachmentChange = async (event) => {
-  
     try {
       const file = event.target.files[0];
+      if (file) {
+        const formData = new FormData();
+        formData.append("file", file);
+        const response = await apiClient.post(UPLOAD_FILE, formData, {
+          withCredentials: true,
+        });
+        if (response.status === 200 && response.data) {
+          if (selectedChatType === "contact") {
+            socket.emit("sendMessage", {
+              sender: userInfo.id,
+              recipient: selectedChatData._id,
+              content: undefined,
+              messageType: "file",
+              fileURL: response.data.filePath,
+            });
+          }
+        }
+      }
       console.log(file);
     } catch (error) {
       console.log(error);
     }
-
-  }
+  };
   return (
     <>
       <div className="h-[10vh] w-[100%] bg-green-900 flex justify-center items-center p-5 px-8 border-t border-[#fff] border-opacity-30">
@@ -72,11 +90,19 @@ const MessageBar = () => {
             placeholder="Type a message"
             className="flex-1 bg-transparent outline-none"
           />
-          <button onClick={handleAttachmentClick} className="text-neutral-400 focus:outline-none focus:text-black transition-all duration-300 focus:border-none">
+          <button
+            onClick={handleAttachmentClick}
+            className="text-neutral-400 focus:outline-none focus:text-black transition-all duration-300 focus:border-none"
+          >
             <GrAttachment />
           </button>
 
-          <input type="file" className="hidden" ref={fileInputRef} onChange={handleAttachmentChange} />
+          <input
+            type="file"
+            className="hidden"
+            ref={fileInputRef}
+            onChange={handleAttachmentChange}
+          />
           <div className="relative flex justify-center items-center">
             <button
               onClick={() => setEmojiPickerOpen(!emojiPickerOpen)}

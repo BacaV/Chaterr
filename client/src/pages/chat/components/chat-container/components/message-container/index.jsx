@@ -4,6 +4,9 @@ import { useRef } from "react";
 import moment from "moment";
 import { apiClient } from "@/lib/api-client";
 import { GET_ALL_MESSAGES } from "@/utils/constants";
+import { HOST } from "@/utils/constants";
+import { MdFolderZip } from "react-icons/md";
+import { IoMdArrowRoundDown } from "react-icons/io";
 
 const MessageContainer = () => {
   const scrollRef = useRef();
@@ -16,34 +19,41 @@ const MessageContainer = () => {
   } = useAppStore();
 
   useEffect(() => {
-
     const getMessages = async () => {
       try {
+        const response = await apiClient.post(
+          GET_ALL_MESSAGES,
+          { id: selectedChatData._id },
+          { withCredentials: true }
+        );
 
-        const response = await apiClient.post(GET_ALL_MESSAGES, {id: selectedChatData._id}, {withCredentials: true});
-
-        if(response.data.messages) {
+        if (response.data.messages) {
           setSelectedChatMessages(response.data.messages);
         }
-
       } catch (error) {
         console.log(error);
       }
     };
 
-    if(selectedChatData._id) {
-      if(selectedChatType === "contact") getMessages();
-  }}, [
-    selectedChatData,
-    selectedChatType,
-    setSelectedChatMessages,
-  ]);
+    if (selectedChatData._id) {
+      if (selectedChatType === "contact") getMessages();
+    }
+  }, [selectedChatData, selectedChatType, setSelectedChatMessages]);
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [selectedChatMessages]);
+
+  const checkImage = (filePath) => {
+    const imageRegex = /\.(jpeg|jpg|png|gif|webp|heif|svg|tiff|bmp|ico|)$/i;
+    return imageRegex.test(filePath);
+  };
+
+  const downloadFile = (file) => {
+
+  }
 
   const renderMessages = () => {
     let lastDate = null;
@@ -80,6 +90,36 @@ const MessageContainer = () => {
           } border inline-block p-4 rounded my-1 max-w-[50%] break-words`}
         >
           {message.content}
+        </div>
+      )}
+      {message.messageType === "file" && (
+        <div
+          className={`${
+            message.sender === selectedChatData._id
+              ? "bg-gray-500 text-white  border-gray-500/50"
+              : "bg-green-500 text-white border-white/20"
+          } border inline-block p-4 rounded my-1 max-w-[50%] break-words`}
+        >
+          {checkImage(message.fileURL) ? (
+            <div className="cursor-pointer">
+              <img
+                src={`${HOST}/${message.fileURL}`}
+                height={300}
+                width={300}
+                alt=""
+              />
+            </div>
+          ) : (
+            <div className="flex items-center justify-center gap-4">
+              <span className="text-white/80 text-3xl bg-black/20 rounded-full p-3">
+                <MdFolderZip />
+              </span>
+              <span>{message.fileURL.split("/").pop()}</span>
+              <span onClick={() => downloadFile(message.fileURL)} className=" bg-black/20 p-3 text-2xl rounded-full hover:bg-black/50 cursor-pointer transition-all duration-300">
+                <IoMdArrowRoundDown />
+              </span>
+            </div>
+          )}
         </div>
       )}
       <div className="text-xs text-gray-600">
