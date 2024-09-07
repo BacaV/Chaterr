@@ -17,6 +17,8 @@ const MessageContainer = () => {
     userInfo,
     selectedChatMessages,
     setSelectedChatMessages,
+    setFileDownloadProgress,
+    setIsDownloading,
   } = useAppStore();
 
   const [showImage, setShowImage] = useState(false);
@@ -56,10 +58,17 @@ const MessageContainer = () => {
   };
 
   const downloadFile = async (url) => {
+    setIsDownloading(true);
+    setFileDownloadProgress(0);
     const response = await apiClient.get(
-      `${HOST}/${url}`, { responseType: "blob" }, { withCredentials: true }
-      
-    )
+      `${HOST}/${url}`,
+      { responseType: "blob", onDownloadProgress: (progressEvent) => {
+        const { loaded, total } = progressEvent;
+        const percent = Math.round((100 * loaded) / total);
+        setFileDownloadProgress(percent);
+      }},
+      { withCredentials: true }
+    );
     const urlBlob = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement("a");
     link.href = urlBlob;
@@ -68,7 +77,9 @@ const MessageContainer = () => {
     link.click();
     link.remove();
     window.URL.revokeObjectURL(urlBlob);
-  }
+    setIsDownloading(false);
+    setFileDownloadProgress(0);
+  };
 
   const renderMessages = () => {
     let lastDate = null;
@@ -122,7 +133,10 @@ const MessageContainer = () => {
                 height={300}
                 width={300}
                 alt=""
-                onClick={() => {setShowImage(true); setImageURL(message.fileURL)}}
+                onClick={() => {
+                  setShowImage(true);
+                  setImageURL(message.fileURL);
+                }}
               />
             </div>
           ) : (
@@ -131,7 +145,10 @@ const MessageContainer = () => {
                 <MdFolderZip />
               </span>
               <span>{message.fileURL.split("/").pop()}</span>
-              <span onClick={() => downloadFile(message.fileURL)} className=" bg-black/20 p-3 text-2xl rounded-full hover:bg-black/50 cursor-pointer transition-all duration-300">
+              <span
+                onClick={() => downloadFile(message.fileURL)}
+                className=" bg-black/20 p-3 text-2xl rounded-full hover:bg-black/50 cursor-pointer transition-all duration-300"
+              >
                 <IoMdArrowRoundDown />
               </span>
             </div>
@@ -150,21 +167,34 @@ const MessageContainer = () => {
       <div className="hmax-h-[80vh] w-[100%] bg-[#303030] flex-1 overflow-y-auto p-5 px-8">
         {renderMessages()}
         <div ref={scrollRef} />
-        {
-          showImage && <div className="fixed z-[1000] top-0 left-0 h-[100vh] w-[100vw] flex items-center justify-center backdrop-blur-lg flex-col">
-              <div>
-                <img src={`${HOST}/${imageURL}`} alt="" className="h-[80vh] w-full bg-cover" />
-              </div>
-              <div className="flex gap-5 fixed top-0 mt-5">
-                <button onClick={() => downloadFile(imageURL)} className=" bg-black/20 p-3 text-2xl rounded-full hover:bg-black/50 cursor-pointer transition-all duration-300">
-                  <IoMdArrowRoundDown />
-                </button>
-                <button onClick={() => {setShowImage(false); setImageURL(null)}} className=" bg-black/20 p-3 text-2xl rounded-full hover:bg-black/50 cursor-pointer transition-all duration-300">
-                  <IoCloseSharp />
-                </button>
-              </div>
+        {showImage && (
+          <div className="fixed z-[1000] top-0 left-0 h-[100vh] w-[100vw] flex items-center justify-center backdrop-blur-lg flex-col">
+            <div>
+              <img
+                src={`${HOST}/${imageURL}`}
+                alt=""
+                className="h-[80vh] w-full bg-cover"
+              />
             </div>
-        }
+            <div className="flex gap-5 fixed top-0 mt-5">
+              <button
+                onClick={() => downloadFile(imageURL)}
+                className=" bg-black/20 p-3 text-2xl rounded-full hover:bg-black/50 cursor-pointer transition-all duration-300"
+              >
+                <IoMdArrowRoundDown />
+              </button>
+              <button
+                onClick={() => {
+                  setShowImage(false);
+                  setImageURL(null);
+                }}
+                className=" bg-black/20 p-3 text-2xl rounded-full hover:bg-black/50 cursor-pointer transition-all duration-300"
+              >
+                <IoCloseSharp />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );
