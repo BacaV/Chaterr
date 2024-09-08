@@ -3,14 +3,14 @@ import Logo from '@/assets/Logo.png'
 import ProfileInfo from './components/profile-info'
 import NewDm from './components/new-dm'
 import { apiClient } from '@/lib/api-client'
-import { GET_CONTACTS_FOR_DM } from '@/utils/constants'
+import { GET_CONTACTS_FOR_DM, GET_USER_CHANNELS } from '@/utils/constants'
 import { useAppStore } from '@/store' 
 import ContactList from '@/components/contact-list'
 import CreateChannel from './components/create-channel'
 
 const ContactsContainer = () => {
 
-  const { setDirectMessagesContacts, directMessagesContacts, channels } = useAppStore()
+  const { setDirectMessagesContacts, setChannels, directMessagesContacts, channels } = useAppStore()
 
   useEffect(() => {
     const getContacts = async () => {
@@ -21,8 +21,17 @@ const ContactsContainer = () => {
       }
     }
 
+    const getChannels = async () => {
+      const response = await apiClient.get(GET_USER_CHANNELS, {withCredentials: true})
+
+      if(response.data.channels) {
+        setChannels(response.data.channels)
+      }
+    }
+
     getContacts()
-  }, [])
+    getChannels()
+  }, [setChannels, setDirectMessagesContacts])
 
   return (
     
