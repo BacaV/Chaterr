@@ -19,3 +19,6 @@ export const GET_ALL_CONTACTS = `${CONTACTS_ROUTES}/get-all-contacts`;
 export const MESSAGES_ROUTES = "api/messages";
 export const GET_ALL_MESSAGES = `${MESSAGES_ROUTES}/get-messages`;
 export const UPLOAD_FILE = `${MESSAGES_ROUTES}/upload-file`
+
+export const CHANNEL_ROUTES = "api/channel";
+export const CREATE_CHANNEL = `${CHANNEL_ROUTES}/create-channel`

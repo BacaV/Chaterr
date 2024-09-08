@@ -12,22 +12,16 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
-import Lottie from "react-lottie";
-import { defaultAnimation } from "@/lib/utils";
-import { GET_ALL_CONTACTS, SEARCH_CONTACTS } from "@/utils/constants";
+import { CREATE_CHANNEL, GET_ALL_CONTACTS } from "@/utils/constants";
 import { apiClient } from "@/lib/api-client";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { HOST } from "@/utils/constants";
 import { useAppStore } from "@/store";
 import { Button } from "@/components/ui/button";
 import MultipleSelector from "@/components/ui/multipleselect";
 
 const CreateChannel = () => {
-  const { setSelectedChatData, setSelectedChatType } = useAppStore();
+  const { setSelectedChatData, setSelectedChatType, addChannel } = useAppStore();
   const [newChannelModal, setNewChannelModal] = useState(false);
   const [searchedContacts, setSearchedContacts] = useState([]);
   const [allContacts, setAllContacts] = useState([]);
@@ -44,7 +38,26 @@ const CreateChannel = () => {
     getData();
   }, []);
 
-  const CreateChannel = async () => {};
+  const CreateChannel = async () => {
+    try {
+        if( channelName.length > 0 && selectedContacts.length > 0 ){
+            const response = await apiClient.post(CREATE_CHANNEL, {
+                name: channelName,
+                members: selectedContacts.map((contact) => contact.value),
+              }, {withCredentials: true});
+              if(response.status === 201) {
+                setChannelName("");
+                setSelectedContacts([]);
+                setNewChannelModal(false);
+                addChannel(response.data.channel);
+              }
+        }
+      
+    }
+    catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
