@@ -57,7 +57,7 @@ const MessageBar = () => {
         fileURL: undefined,
         channelId: selectedChatData._id});
     }
-    setMessage(null);
+    setMessage("");
   };
 
   const handleAttachmentClick = () => {
@@ -99,7 +99,6 @@ const MessageBar = () => {
           }
         }
       }
-      console.log(file);
     } catch (error) {
       setIsUploading(false);
       console.log(error);
@@ -114,7 +113,7 @@ const MessageBar = () => {
             value={message}
             type="text"
             placeholder="Type a message"
-            className="flex-1 bg-transparent outline-none"
+            className="flex-1 bg-transparent outline-none text-black"
           />
           <button
             onClick={handleAttachmentClick}

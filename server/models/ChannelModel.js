@@ -6,17 +6,17 @@ const channelSchema = new mongoose.Schema({
         required: true
     },
     members: [{
-        type: [mongoose.Schema.Types.ObjectId],
+        type: mongoose.Schema.ObjectId,
         ref: "Users",
         required: true
     }],
     admin: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.ObjectId,
         ref: "Users",
         required: true
     },
     messages: [{
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.ObjectId,
         ref: "Messages"
     }],
     createdAt: {

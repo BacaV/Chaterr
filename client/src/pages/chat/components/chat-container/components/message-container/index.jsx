@@ -8,6 +8,7 @@ import { HOST } from "@/utils/constants";
 import { MdFolderZip, MdWindPower } from "react-icons/md";
 import { IoMdArrowRoundBack, IoMdArrowRoundDown } from "react-icons/io";
 import { IoCloseSharp } from "react-icons/io5";
+import { AvatarFallback, Avatar, AvatarImage } from "@radix-ui/react-avatar";
 
 const MessageContainer = () => {
   const scrollRef = useRef();
@@ -62,11 +63,14 @@ const MessageContainer = () => {
     setFileDownloadProgress(0);
     const response = await apiClient.get(
       `${HOST}/${url}`,
-      { responseType: "blob", onDownloadProgress: (progressEvent) => {
-        const { loaded, total } = progressEvent;
-        const percent = Math.round((100 * loaded) / total);
-        setFileDownloadProgress(percent);
-      }},
+      {
+        responseType: "blob",
+        onDownloadProgress: (progressEvent) => {
+          const { loaded, total } = progressEvent;
+          const percent = Math.round((100 * loaded) / total);
+          setFileDownloadProgress(percent);
+        },
+      },
       { withCredentials: true }
     );
     const urlBlob = window.URL.createObjectURL(new Blob([response.data]));
@@ -96,6 +100,7 @@ const MessageContainer = () => {
             </div>
           )}
           {selectedChatType === "contact" && renderDMMessages(message)}
+          {selectedChatType === "channel" && renderChannelMessages(message)}
         </div>
       );
     });
@@ -156,11 +161,59 @@ const MessageContainer = () => {
         </div>
       )}
       <div className="text-xs text-gray-600">
-        {moment(message.timestamp).format("LT")}
-        <p>ojsa</p>
+        {moment(message.timestamp).format("LL")}
       </div>
     </div>
   );
+
+  const renderChannelMessages = (message) => {
+    return (
+      <div
+        className={`mt-5 ${
+          message.sender._id !== userInfo.id ? "text-left" : "text-right"
+        }`}
+      >
+        {message.messageType === "text" && (
+          <div
+            className={`${
+              message.sender._id !== userInfo.id
+                ? "bg-gray-500 text-white  border-gray-500/50 ml-9"
+                : "bg-green-500 text-white border-white/20"
+            } border inline-block p-4 rounded my-1 max-w-[50%] break-words`}
+          >
+            {message.content}
+          </div>
+        )}
+        {message.sender._id !== userInfo.id ? (
+          <div>
+            <Avatar className="size-10">
+              {message.sender.image && (
+                <AvatarImage src={`${HOST}/${message.sender.image}`} />
+              )}
+              <AvatarFallback
+                className={`size-8 uppercase bg-blue-500 rounded-full  text-white flex justify-center items-center text-xs`}
+              >
+                {message.sender.firstName
+                  ? message.sender.firstName.split("").shift()
+                  : message.sender.email.split("").shift()}
+              </AvatarFallback>
+            </Avatar>
+            <span className="text-sm text-gray-600">
+              {message.sender.firstName} {message.sender.lastName}
+            </span>
+            <span className="text-xs text-gray-600/60 ml-1">
+              {""}
+              {moment(message.timestamp).format("LT")}
+            </span>
+          </div>
+        ) : (
+          <div className="text-sm text-gray-600">
+            {moment(message.timestamp).format("LT")}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <>

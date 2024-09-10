@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import Logo from '@/assets/Logo.png'
 import ProfileInfo from './components/profile-info'
 import NewDm from './components/new-dm'
@@ -29,8 +29,9 @@ const ContactsContainer = () => {
       }
     }
 
-    getContacts()
-    getChannels()
+    
+    getChannels();
+    getContacts();
   }, [setChannels, setDirectMessagesContacts])
 
   return (

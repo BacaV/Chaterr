@@ -35,8 +35,9 @@ export const createChannel = async (req, res, next) => {
 export const getUserChannels = async (req, res, next) => {
   try {
     const userId = new mongoose.Types.ObjectId(req.userId);
+    
     const channels = await Channel.find({
-      $or: [{ admin: userId }, { members: userId }],
+      $or: [{ members: userId }, { admin: userId }],
     }).sort({ updatedAt: -1 });
     return res.status(200).json({ channels });
   } catch (error) {
