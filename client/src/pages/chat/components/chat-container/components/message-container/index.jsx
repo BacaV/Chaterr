@@ -184,6 +184,43 @@ const MessageContainer = () => {
             {message.content}
           </div>
         )}
+        {message.messageType === "file" && (
+        <div
+          className={`${
+            message.sender._id === userInfo.id
+              ? "bg-green-500 text-white  border-gray-500/50"
+              : "bg-gray-500 text-white border-white/20 ml-9"
+          } border inline-block p-4 rounded my-1 max-w-[50%] break-words`}
+        >
+          {checkImage(message.fileURL) ? (
+            <div className="cursor-pointer">
+              <img
+                src={`${HOST}/${message.fileURL}`}
+                height={300}
+                width={300}
+                alt=""
+                onClick={() => {
+                  setShowImage(true);
+                  setImageURL(message.fileURL);
+                }}
+              />
+            </div>
+          ) : (
+            <div className="flex items-center justify-center gap-4">
+              <span className="text-white/80 text-3xl bg-black/20 rounded-full p-3">
+                <MdFolderZip />
+              </span>
+              <span>{message.fileURL.split("/").pop()}</span>
+              <span
+                onClick={() => downloadFile(message.fileURL)}
+                className=" bg-black/20 p-3 text-2xl rounded-full hover:bg-black/50 cursor-pointer transition-all duration-300"
+              >
+                <IoMdArrowRoundDown />
+              </span>
+            </div>
+          )}
+        </div>
+      )}
         {message.sender._id !== userInfo.id ? (
           <div>
             <Avatar className="size-10">
