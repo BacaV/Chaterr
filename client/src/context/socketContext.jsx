@@ -24,7 +24,7 @@ export const SocketProvider = ({ children }) => {
       });
 
       const handleRecieveMessage = (message) => {
-        const { selectedChatData, selectedChatType, addMessage } =
+        const { selectedChatData, selectedChatType, addMessage, addChannelInChannelList } =
           useAppStore.getState();
 
         if (
@@ -34,6 +34,7 @@ export const SocketProvider = ({ children }) => {
         ) {
           addMessage(message);
         }
+        addChannelInChannelList(message);
         
       };
 
